@@ -1,4 +1,73 @@
 @model PollingEcommerce.MVC.Models.OrderViewModel
 @{ ViewData["Title"] = "Payment status"; }
-<div class="status-panel mx-auto text-center rounded-4 shadow-sm p-5"><div id="spinner" class="spinner-border text-primary mb-4"></div><h1 id="title" class="h2">Confirming your payment</h1><p id="message" class="text-secondary">Keep this page open. We are checking safely with the store API.</p><dl class="row text-start mt-4"><dt class="col-5">Order</dt><dd class="col-7 text-break">@Model.OrderNumber</dd><dt class="col-5">Order status</dt><dd class="col-7" id="order-status">PendingPayment</dd><dt class="col-5">Payment status</dt><dd class="col-7" id="payment-status">Pending</dd><dt class="col-5">Total</dt><dd class="col-7" id="total">—</dd></dl><a href="/" class="btn btn-outline-primary mt-3">Back to store</a></div>
-@section Scripts { <script>const order='@Model.OrderNumber';async function poll(){try{const r=await fetch(`/Home/OrderStatus?orderNumber=${order}`);const x=await r.json();document.querySelector('#order-status').textContent=x.orderStatus;document.querySelector('#payment-status').textContent=x.paymentStatus;document.querySelector('#total').textContent=Number(x.totalAmount).toLocaleString()+' MMK';if(x.orderStatus==='Paid'){done('Payment confirmed','Your order is confirmed. Thank you!','text-success');return}if(x.orderStatus==='PaymentFailed'){done('Payment failed',x.failureReason||'The payment could not be completed.','text-danger');return}}catch{}setTimeout(poll,2000)}function done(t,m,c){document.querySelector('#spinner').classList.add('d-none');const e=document.querySelector('#title');e.textContent=t;e.classList.add(c);document.querySelector('#message').textContent=m}poll();</script> }
+<div class="status-layout">
+    <section class="status-panel glass-panel">
+        <div class="payment-orbit" id="payment-orbit"><span></span><span></span><span></span><div class="payment-orbit-core"></div></div>
+        <span class="eyebrow">SECURE PAYMENT</span>
+        <h1 id="title">Confirming your payment</h1>
+        <p id="message">Keep this page open while the store verifies the payment status.</p>
+        <div class="progress-track" id="progress-track"><span></span></div>
+        <div class="order-details">
+            <div class="detail-row"><span>Order reference</span><strong class="text-break">@Model.OrderNumber</strong></div>
+            <div class="detail-row"><span>Order status</span><strong><span class="status-chip status-pending" id="order-status">Pending payment</span></strong></div>
+            <div class="detail-row"><span>Payment status</span><strong id="payment-status">Pending</strong></div>
+            <div class="detail-row total-row"><span>Total</span><strong id="total">—</strong></div>
+        </div>
+        <a href="/" class="btn btn-glass">Back to store</a>
+    </section>
+</div>
+
+@section Scripts {
+    <script>
+        const order = '@Model.OrderNumber';
+        const orderStatus = document.querySelector('#order-status');
+        const paymentStatus = document.querySelector('#payment-status');
+        let consecutiveErrors = 0;
+        let completed = false;
+
+        async function poll() {
+            if (completed) return;
+            try {
+                const response = await fetch(`/Home/OrderStatus?orderNumber=${order}`);
+                if (!response.ok) throw new Error('The order status is temporarily unavailable.');
+                const result = await response.json();
+                consecutiveErrors = 0;
+                orderStatus.textContent = formatStatus(result.orderStatus);
+                paymentStatus.textContent = formatStatus(result.paymentStatus);
+                document.querySelector('#total').textContent = `${Number(result.totalAmount).toLocaleString()} MMK`;
+
+                if (result.orderStatus === 'Paid') {
+                    completePayment('success', 'Payment confirmed', 'Your payment was confirmed and the order is now ready.', 'Continue shopping');
+                    return;
+                }
+                if (result.orderStatus === 'PaymentFailed') {
+                    completePayment('error', 'Payment unsuccessful', result.failureReason || 'The payment could not be completed. Please try again.', 'Return to store');
+                    return;
+                }
+                setTimeout(poll, 2000);
+            } catch (error) {
+                consecutiveErrors++;
+                paymentStatus.textContent = 'Reconnecting';
+                if (consecutiveErrors === 3) {
+                    await Swal.fire({ icon: 'warning', title: 'Still reconnecting', text: 'We cannot reach the order service right now. Your payment has not been marked as failed.', confirmButtonText: 'Keep checking', customClass: { popup: 'glass-swal' } });
+                }
+                setTimeout(poll, 3000);
+            }
+        }
+
+        function formatStatus(value) { return value.replace(/([a-z])([A-Z])/g, '$1 $2'); }
+
+        async function completePayment(icon, title, message, buttonText) {
+            completed = true;
+            document.querySelector('#payment-orbit').classList.add(icon === 'success' ? 'is-success' : 'is-error');
+            document.querySelector('#progress-track').classList.add('is-complete');
+            document.querySelector('#title').textContent = title;
+            document.querySelector('#message').textContent = message;
+            orderStatus.className = `status-chip ${icon === 'success' ? 'status-success' : 'status-error'}`;
+            await Swal.fire({ icon, title, text: message, confirmButtonText: buttonText, customClass: { popup: 'glass-swal' } });
+            window.location.href = '/';
+        }
+
+        poll();
+    </script>
+}

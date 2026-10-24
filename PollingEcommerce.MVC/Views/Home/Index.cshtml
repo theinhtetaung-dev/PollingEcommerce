@@ -3,11 +3,63 @@
 }
 
 @model List<PollingEcommerce.MVC.Models.ProductViewModel>
-<section class="hero rounded-4 p-5 mb-4"><span class="badge text-bg-light mb-3">POLLING CHECKOUT DEMO</span><h1>Simple products. Reliable payments.</h1><p class="lead mb-0">Choose quantities, select a simulation, and watch payment status update live.</p></section>
-@if (TempData["Error"] is string error) { <div class="alert alert-danger">@error</div> }
-<form asp-action="Checkout" method="post"><div class="row g-4">
+<section class="hero glass-panel">
+    <div class="hero-copy">
+        <span class="eyebrow">POLLING CHECKOUT DEMO</span>
+        <h1>Elevated essentials.<br /><span>Effortless checkout.</span></h1>
+        <p>Explore a thoughtfully selected collection and follow every payment update in real time.</p>
+    </div>
+    <div class="hero-stat" aria-label="Payment system status"><span class="status-pulse"></span><div><strong>Payment network</strong><small>Online and ready</small></div></div>
+</section>
+
+<div class="section-heading"><div><span class="eyebrow">THE COLLECTION</span><h2>Featured products</h2></div><p>@Model.Count carefully selected items</p></div>
+
+@if (TempData["Error"] is string error)
+{
+    <div id="server-error" data-message="@error" hidden></div>
+}
+
+<form asp-action="Checkout" method="post" id="checkout-form"><div class="row g-4 product-grid">
 @for (var i = 0; i < Model.Count; i++)
 {
-    <div class="col-md-6 col-lg-4"><article class="card product-card h-100 border-0 shadow-sm"><div class="card-body d-flex flex-column"><small class="text-uppercase text-primary fw-semibold">@Model[i].Category</small><h2 class="h5 mt-2">@Model[i].Name</h2><p class="text-secondary flex-grow-1">@Model[i].Description</p><div class="d-flex justify-content-between"><strong>@Model[i].Price.ToString("N0") MMK</strong><span class="small text-secondary">@Model[i].Stock in stock</span></div><input type="hidden" name="Items[@i].ProductId" value="@Model[i].Id" /><label class="form-label mt-3">Quantity</label><input class="form-control" type="number" min="0" max="@Model[i].Stock" value="0" name="Items[@i].Quantity" /></div></article></div>
+    <div class="col-md-6 col-lg-4">
+        <article class="product-card glass-panel h-100">
+            <div class="product-visual"><span>@Model[i].Category.Substring(0, 1)</span><small>@Model[i].Category</small></div>
+            <div class="product-body">
+                <span class="category-label">@Model[i].Category</span>
+                <h3>@Model[i].Name</h3>
+                <p>@Model[i].Description</p>
+                <div class="product-meta"><strong>@Model[i].Price.ToString("N0") <small>MMK</small></strong><span><i></i>@Model[i].Stock available</span></div>
+                <input type="hidden" name="Items[@i].ProductId" value="@Model[i].Id" />
+                <div class="quantity-control"><label for="quantity-@i">Quantity</label><input id="quantity-@i" class="form-control" type="number" min="0" max="@Model[i].Stock" value="0" name="Items[@i].Quantity" inputmode="numeric" /></div>
+            </div>
+        </article>
+    </div>
 }
-</div><div class="checkout-bar shadow-lg rounded-4 p-3 mt-4 d-flex gap-3 align-items-center justify-content-between"><div><label class="form-label mb-1">Payment simulation</label><select class="form-select" name="PaymentMode"><option>Success</option><option>Failed</option><option>Delayed</option></select></div><button class="btn btn-primary btn-lg px-5" type="submit">Checkout securely</button></div></form>
+</div><div class="checkout-bar glass-panel"><div class="checkout-copy"><span class="lock-icon" aria-hidden="true"></span><div><strong>Secure checkout</strong><small>Prices are verified by the server</small></div></div><div class="checkout-actions"><div class="mode-select"><label for="payment-mode">Simulation</label><select class="form-select" id="payment-mode" name="PaymentMode"><option>Success</option><option>Failed</option><option>Delayed</option></select></div><button class="btn btn-primary btn-lg" type="submit" id="checkout-button">Continue to payment <span aria-hidden="true">→</span></button></div></div></form>
+
+@section Scripts {
+    <script>
+        const checkoutForm = document.querySelector('#checkout-form');
+        const serverError = document.querySelector('#server-error');
+
+        if (serverError) {
+            Swal.fire({ icon: 'error', title: 'Checkout unavailable', text: serverError.dataset.message, confirmButtonText: 'Review order', customClass: { popup: 'glass-swal' } });
+        }
+
+        checkoutForm.addEventListener('submit', async event => {
+            event.preventDefault();
+            const quantity = [...checkoutForm.querySelectorAll('input[type="number"]')].reduce((total, input) => total + Number(input.value || 0), 0);
+            if (quantity === 0) {
+                await Swal.fire({ icon: 'warning', title: 'Your selection is empty', text: 'Choose at least one item before continuing.', confirmButtonText: 'Choose products', customClass: { popup: 'glass-swal' } });
+                return;
+            }
+
+            const result = await Swal.fire({ icon: 'question', title: 'Ready to checkout?', text: `${quantity} item${quantity === 1 ? '' : 's'} will be submitted for secure payment.`, showCancelButton: true, confirmButtonText: 'Confirm checkout', cancelButtonText: 'Keep shopping', reverseButtons: true, customClass: { popup: 'glass-swal' } });
+            if (!result.isConfirmed) return;
+
+            Swal.fire({ title: 'Creating your order', text: 'Verifying stock and current prices…', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, customClass: { popup: 'glass-swal' }, didOpen: () => Swal.showLoading() });
+            checkoutForm.submit();
+        });
+    </script>
+}
