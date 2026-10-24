@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using PollingEcommerce.Domain;
+using PollingEcommerce.Domain.Features.Store;
 
 namespace PollingEcommerce.WebAPI.Controllers;
 

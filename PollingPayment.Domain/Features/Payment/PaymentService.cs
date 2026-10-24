@@ -2,8 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Polling.Shared;
 using PollingPayment.DataAccess.Models;
 using PollingPayment.DataAccess.AppDbContext;
+using PollingPayment.Domain.Models.Payment;
 
-namespace PollingPayment.Domain;
+namespace PollingPayment.Domain.Features.Payment;
 
 public sealed class PaymentService : IPaymentService
 {

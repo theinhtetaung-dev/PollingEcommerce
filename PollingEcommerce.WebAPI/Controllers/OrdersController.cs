@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using PollingEcommerce.Domain;
+using PollingEcommerce.Domain.Features.Store;
+using PollingEcommerce.Domain.Models.Orders;
 using Polling.Shared;
 
 namespace PollingEcommerce.WebAPI.Controllers;

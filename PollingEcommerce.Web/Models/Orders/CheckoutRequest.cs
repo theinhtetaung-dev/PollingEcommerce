@@ -1,4 +1,4 @@
-namespace PollingEcommerce.Domain;
+namespace PollingEcommerce.Domain.Models.Orders;
 
 public sealed class CheckoutRequest
 {

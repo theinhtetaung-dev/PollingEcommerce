@@ -1,4 +1,4 @@
-namespace PollingEcommerce.MVC.Models;
+namespace PollingEcommerce.MVC.Models.Orders;
 
 public sealed class OrderViewModel
 {

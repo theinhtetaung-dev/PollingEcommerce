@@ -1,6 +1,8 @@
 using Polling.Shared;
+using PollingEcommerce.Domain.Models.Orders;
+using PollingEcommerce.Domain.Models.Products;
 
-namespace PollingEcommerce.Domain;
+namespace PollingEcommerce.Domain.Features.Store;
 
 public interface IEcommerceService
 {

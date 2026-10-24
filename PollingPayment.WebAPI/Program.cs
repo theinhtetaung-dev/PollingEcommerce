@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PollingPayment.DataAccess.AppDbContext;
-using PollingPayment.Domain;
+using PollingPayment.Domain.Features.Payment;
 
 var builder = WebApplication.CreateBuilder(args);
 

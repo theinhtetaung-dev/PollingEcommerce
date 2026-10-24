@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PollingEcommerce.MVC.Models;
+using PollingEcommerce.MVC.Models.Orders;
+using PollingEcommerce.MVC.Models.Store;
 using System.Net.Http.Json;
 using System.Diagnostics;
 

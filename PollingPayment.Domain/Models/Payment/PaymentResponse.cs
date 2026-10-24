@@ -1,4 +1,4 @@
-namespace PollingPayment.Domain;
+namespace PollingPayment.Domain.Models.Payment;
 
 public sealed class PaymentResponse
 {

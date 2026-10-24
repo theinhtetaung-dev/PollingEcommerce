@@ -3,8 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Polling.Shared;
 using PollingEcommerce.DataAccess.Models;
 using PollingEcommerce.DataAccess.AppDbContext;
+using PollingEcommerce.Domain.Models.Orders;
+using PollingEcommerce.Domain.Models.Payments;
+using PollingEcommerce.Domain.Models.Products;
 
-namespace PollingEcommerce.Domain;
+namespace PollingEcommerce.Domain.Features.Store;
 
 public sealed class EcommerceService : IEcommerceService
 {

@@ -1,4 +1,4 @@
-namespace PollingEcommerce.MVC.Models;
+namespace PollingEcommerce.MVC.Models.Store;
 
 public sealed class CheckoutForm
 {

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PollingEcommerce.DataAccess.AppDbContext;
-using PollingEcommerce.Domain;
+using PollingEcommerce.Domain.Features.Store;
 
 var builder = WebApplication.CreateBuilder(args);
 

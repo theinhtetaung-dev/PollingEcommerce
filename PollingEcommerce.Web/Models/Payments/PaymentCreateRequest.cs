@@ -1,4 +1,4 @@
-namespace PollingEcommerce.Domain;
+namespace PollingEcommerce.Domain.Models.Payments;
 
 internal sealed class PaymentCreateRequest
 {

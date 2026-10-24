@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using PollingPayment.Domain;
+using PollingPayment.Domain.Features.Payment;
+using PollingPayment.Domain.Models.Payment;
 
 namespace PollingPayment.WebAPI.Controllers;
 
