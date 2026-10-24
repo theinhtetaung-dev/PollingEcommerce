@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup><AssemblyName>PollingEcommerce.Domain</AssemblyName><RootNamespace>PollingEcommerce.Domain</RootNamespace></PropertyGroup>
+  <ItemGroup><PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" /><ProjectReference Include="..\Polling.Shared\Polling.Shared.csproj" /><ProjectReference Include="..\PollingEcommerce.DataAccess\PollingEcommerce.DataAccess.csproj" /></ItemGroup>
+</Project>

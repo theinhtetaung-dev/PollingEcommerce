@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="PollingEcommerce.DataAccess/PollingEcommerce.DataAccess.csproj" />
+  <Project Path="PollingEcommerce.MVC/PollingEcommerce.MVC.csproj" />
+  <Project Path="PollingEcommerce.Web/PollingEcommerce.Domain.csproj" />
+  <Project Path="PollingEcommerce.WebAPI/PollingEcommerce.WebAPI.csproj" />
+  <Project Path="PollingPayment.DataAccess/PollingPayment.DataAccess.csproj" />
+  <Project Path="PollingPayment.Domain/PollingPayment.Domain.csproj" />
+  <Project Path="PollingPayment.WebAPI/PollingPayment.WebAPI.csproj" />
+</Solution>

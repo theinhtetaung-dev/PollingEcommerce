@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Store";
+}
+
+@model List<PollingEcommerce.MVC.Models.ProductViewModel>
+<section class="hero rounded-4 p-5 mb-4"><span class="badge text-bg-light mb-3">POLLING CHECKOUT DEMO</span><h1>Simple products. Reliable payments.</h1><p class="lead mb-0">Choose quantities, select a simulation, and watch payment status update live.</p></section>
+@if (TempData["Error"] is string error) { <div class="alert alert-danger">@error</div> }
+<form asp-action="Checkout" method="post"><div class="row g-4">
+@for (var i = 0; i < Model.Count; i++)
+{
+    <div class="col-md-6 col-lg-4"><article class="card product-card h-100 border-0 shadow-sm"><div class="card-body d-flex flex-column"><small class="text-uppercase text-primary fw-semibold">@Model[i].Category</small><h2 class="h5 mt-2">@Model[i].Name</h2><p class="text-secondary flex-grow-1">@Model[i].Description</p><div class="d-flex justify-content-between"><strong>@Model[i].Price.ToString("N0") MMK</strong><span class="small text-secondary">@Model[i].Stock in stock</span></div><input type="hidden" name="Items[@i].ProductId" value="@Model[i].Id" /><label class="form-label mt-3">Quantity</label><input class="form-control" type="number" min="0" max="@Model[i].Stock" value="0" name="Items[@i].Quantity" /></div></article></div>
+}
+</div><div class="checkout-bar shadow-lg rounded-4 p-3 mt-4 d-flex gap-3 align-items-center justify-content-between"><div><label class="form-label mb-1">Payment simulation</label><select class="form-select" name="PaymentMode"><option>Success</option><option>Failed</option><option>Delayed</option></select></div><button class="btn btn-primary btn-lg px-5" type="submit">Checkout securely</button></div></form>

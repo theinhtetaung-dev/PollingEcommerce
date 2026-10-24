@@ -1,0 +1,22 @@
+[
+  {
+    "Name": "Polling",
+    "Projects": [
+      {
+        "Path": "PollingEcommerce.WebAPI\\PollingEcommerce.WebAPI.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "PollingEcommerce.MVC\\PollingEcommerce.MVC.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "PollingPayment.WebAPI\\PollingPayment.WebAPI.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      }
+    ]
+  }
+]
