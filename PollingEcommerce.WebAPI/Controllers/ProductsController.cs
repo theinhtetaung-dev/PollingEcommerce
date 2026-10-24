@@ -4,7 +4,19 @@ using PollingEcommerce.Domain;
 namespace PollingEcommerce.WebAPI.Controllers;
 
 [ApiController, Route("api/products")]
-public class ProductsController(IEcommerceService service) : ControllerBase
+public class ProductsController : ControllerBase
 {
-    [HttpGet] public async Task<IActionResult> Get(CancellationToken token) => Ok(await service.GetProductsAsync(token));
+    private readonly IEcommerceService _service;
+
+    public ProductsController(IEcommerceService service)
+    {
+        _service = service;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Get(CancellationToken token)
+    {
+        var products = await _service.GetProductsAsync(token);
+        return Ok(products);
+    }
 }

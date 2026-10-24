@@ -10,8 +10,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<PollingEcommerceDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddHttpClient("PaymentApi", client => client.BaseAddress = new Uri(builder.Configuration["PaymentApi:BaseUrl"]!));
+builder.Services.AddDbContext<PollingEcommerceDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+builder.Services.AddHttpClient("PaymentApi", client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["PaymentApi:BaseUrl"]!);
+});
 builder.Services.AddScoped<IEcommerceService, EcommerceService>();
 
 var app = builder.Build();

@@ -4,20 +4,41 @@ using PollingPayment.Domain;
 namespace PollingPayment.WebAPI.Controllers;
 
 [ApiController, Route("api/payments")]
-public class PaymentsController(IPaymentService paymentService) : ControllerBase
+public class PaymentsController : ControllerBase
 {
+    private readonly IPaymentService _paymentService;
+
+    public PaymentsController(IPaymentService paymentService)
+    {
+        _paymentService = paymentService;
+    }
+
     [HttpPost]
     public async Task<IActionResult> Create(CreatePaymentRequest request, CancellationToken token)
     {
-        var result = await paymentService.CreateAsync(request, token);
-        if (result.IsSuccess) return Ok(result.Value);
-        return result.Error.Code == "conflict" ? Conflict(result.Error) : BadRequest(result.Error);
+        var result = await _paymentService.CreateAsync(request, token);
+        if (result.IsSuccess)
+        {
+            return Ok(result.Value);
+        }
+
+        if (result.Error.Code == "conflict")
+        {
+            return Conflict(result.Error);
+        }
+
+        return BadRequest(result.Error);
     }
 
     [HttpGet("{reference:guid}")]
     public async Task<IActionResult> Get(Guid reference, CancellationToken token)
     {
-        var result = await paymentService.GetAsync(reference, token);
-        return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+        var result = await _paymentService.GetAsync(reference, token);
+        if (result.IsSuccess)
+        {
+            return Ok(result.Value);
+        }
+
+        return NotFound(result.Error);
     }
 }

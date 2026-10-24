@@ -2,7 +2,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddHttpClient("EcommerceApi", client => client.BaseAddress = new Uri(builder.Configuration["EcommerceApi:BaseUrl"]!));
+builder.Services.AddHttpClient("EcommerceApi", client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["EcommerceApi:BaseUrl"]!);
+});
 
 var app = builder.Build();
 

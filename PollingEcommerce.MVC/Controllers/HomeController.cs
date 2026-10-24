@@ -26,7 +26,12 @@ namespace PollingEcommerce.MVC.Controllers
         public async Task<IActionResult> Checkout(CheckoutForm form, CancellationToken token)
         {
             var items = form.Items.Where(x => x.Quantity > 0).ToList();
-            if (items.Count == 0) { TempData["Error"] = "Please select at least one product."; return RedirectToAction(nameof(Index)); }
+            if (items.Count == 0)
+            {
+                TempData["Error"] = "Please select at least one product.";
+                return RedirectToAction(nameof(Index));
+            }
+
             var response = await _httpClientFactory.CreateClient("EcommerceApi").PostAsJsonAsync("api/orders/checkout", new { userId = 1, items, paymentMode = form.PaymentMode }, token);
             if (!response.IsSuccessStatusCode)
             {
@@ -34,22 +39,35 @@ namespace PollingEcommerce.MVC.Controllers
                 TempData["Error"] = error?.Message ?? "Checkout could not be completed. Please try again.";
                 return RedirectToAction(nameof(Index));
             }
+
             var order = await response.Content.ReadFromJsonAsync<OrderViewModel>(cancellationToken: token);
             if (order is null)
             {
                 TempData["Error"] = "The order response was incomplete. Please try again.";
                 return RedirectToAction(nameof(Index));
             }
+
             return RedirectToAction(nameof(Status), new { orderNumber = order.OrderNumber });
         }
 
-        public IActionResult Status(Guid orderNumber) => View(new OrderViewModel { OrderNumber = orderNumber });
+        public IActionResult Status(Guid orderNumber)
+        {
+            return View(new OrderViewModel
+            {
+                OrderNumber = orderNumber
+            });
+        }
 
         [HttpGet]
         public async Task<IActionResult> OrderStatus(Guid orderNumber, CancellationToken token)
         {
             var response = await _httpClientFactory.CreateClient("EcommerceApi").GetAsync($"api/orders/{orderNumber}", token);
-            return new ContentResult { StatusCode = (int)response.StatusCode, ContentType = "application/json", Content = await response.Content.ReadAsStringAsync(token) };
+            return new ContentResult
+            {
+                StatusCode = (int)response.StatusCode,
+                ContentType = "application/json",
+                Content = await response.Content.ReadAsStringAsync(token)
+            };
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
